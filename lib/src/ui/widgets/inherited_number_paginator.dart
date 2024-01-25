@@ -7,6 +7,9 @@ class InheritedNumberPaginator extends InheritedWidget {
   /// Total number of pages that should be shown.
   final int numberPages;
 
+  final TextStyle? selectedButtonTextStyle;
+  final TextStyle? unselectedButtonTextStyle;
+
   /// Index of initially selected page.
   final int initialPage;
 
@@ -24,6 +27,8 @@ class InheritedNumberPaginator extends InheritedWidget {
     this.onPageChange,
     required this.config,
     required Widget child,
+    this.selectedButtonTextStyle,
+    this.unselectedButtonTextStyle,
   }) : super(key: key, child: child);
 
   static InheritedNumberPaginator of(BuildContext context) {
