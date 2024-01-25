@@ -9,7 +9,7 @@ class NumbersPage extends StatefulWidget {
 }
 
 class _NumbersPageState extends State<NumbersPage> {
-  final int _numPages = 10;
+  final int _numPages = 60;
   int _currentPage = 0;
 
   @override
@@ -25,21 +25,36 @@ class _NumbersPageState extends State<NumbersPage> {
     );
 
     return Scaffold(
-      body: pages[_currentPage],
-      // card for elevation
-      bottomNavigationBar: Card(
-        margin: EdgeInsets.zero,
-        elevation: 4,
-        child: NumberPaginator(
-          // by default, the paginator shows numbers as center content
-          numberPages: _numPages,
-          onPageChange: (int index) {
-            setState(() {
-              _currentPage = index;
-            });
-          },
-        ),
+      body: Column(
+        children: [
+          pages[_currentPage],
+          Container(
+            color: Colors.amber,
+            alignment: Alignment.center,
+            child: NumberPaginator(
+              config: NumberPaginatorUIConfig(
+                mainAxisAlignment: MainAxisAlignment.center,
+                height: 46,
+                buttonShape: RoundedRectangleBorder(
+                  side: const BorderSide(
+                    color: Colors.black,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              // by default, the paginator shows numbers as center content
+              numberPages: _numPages,
+              onPageChange: (int index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+            ),
+          ),
+        ],
       ),
+      // card for elevation
+      // bottomNavigationBar:
     );
   }
 }

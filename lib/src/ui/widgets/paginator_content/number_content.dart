@@ -20,25 +20,67 @@ class NumberContent extends StatelessWidget {
         /// Buttons have an aspect ratio of 1:1. Therefore use paginator height as
         /// button width.
         var buttonWidth = constraints.maxHeight;
-        var availableSpots = (constraints.maxWidth / buttonWidth).floor();
+        var availableSpots = (double.maxFinite / buttonWidth).floor();
+
+        availableSpots = _getAvailableSpots(availableSpots);
 
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildPageButton(context, 0),
+            if (_showFirstButton()) _buildPageButton(context, 0),
             if (_frontDotsShouldShow(context, availableSpots))
-              _buildDots(context),
+              _buildDots(context) ?? Container(),
             if (InheritedNumberPaginator.of(context).numberPages > 1)
               ..._generateButtonList(context, availableSpots),
             if (_backDotsShouldShow(context, availableSpots))
-              _buildDots(context),
-            if (InheritedNumberPaginator.of(context).numberPages > 1)
-              _buildPageButton(context,
-                  InheritedNumberPaginator.of(context).numberPages - 1),
+              _buildDots(context) ?? Container(),
+            if (_showLastButton(context))
+              _buildPageButton(
+                context,
+                InheritedNumberPaginator.of(context).numberPages - 1,
+              ),
           ],
         );
       },
     );
+  }
+
+  _getAvailableSpots(int spots) {
+    if (spots >= 6) {
+      if (currentPage < 2) {
+        return 5;
+      } else {
+        return 6;
+      }
+    }
+
+    return spots;
+  }
+
+  bool _showFirstButton() {
+    if (currentPage < 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool _showLastButton(
+    BuildContext context,
+  ) {
+    if (InheritedNumberPaginator.of(context).numberPages > 1) {
+      final currentPosition =
+          InheritedNumberPaginator.of(context).numberPages - (currentPage + 1);
+
+      if (currentPosition < 2) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return false;
   }
 
   /// Generates the variable button list which is at the center of the (optional)
@@ -78,7 +120,7 @@ class NumberContent extends StatelessWidget {
         ),
       );
 
-  Widget _buildDots(BuildContext context) => AspectRatio(
+  Widget? _buildDots(BuildContext context) => AspectRatio(
         aspectRatio: 1,
         child: Container(
           padding: const EdgeInsets.all(4.0),
