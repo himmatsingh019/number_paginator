@@ -22,7 +22,7 @@ class NumberContent extends StatelessWidget {
         var buttonWidth = constraints.maxHeight;
         var availableSpots = (double.maxFinite / buttonWidth).floor();
 
-        availableSpots = _getAvailableSpots(availableSpots);
+        availableSpots = _getAvailableSpots(context, availableSpots);
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,9 +46,16 @@ class NumberContent extends StatelessWidget {
     );
   }
 
-  _getAvailableSpots(int spots) {
+  _getAvailableSpots(
+    BuildContext context,
+    int spots,
+  ) {
+    final totalPages = InheritedNumberPaginator.of(context).numberPages;
+
     if (spots >= 6) {
       if (currentPage < 2) {
+        return 5;
+      } else if (currentPage > 2 && currentPage + 1 >= totalPages - 1) {
         return 5;
       } else {
         return 6;
@@ -148,15 +155,31 @@ class NumberContent extends StatelessWidget {
       );
 
   /// Checks if pages don't fit in available spots and dots have to be shown.
-  bool _backDotsShouldShow(BuildContext context, int availableSpots) =>
-      availableSpots < InheritedNumberPaginator.of(context).numberPages &&
-      currentPage <
-          InheritedNumberPaginator.of(context).numberPages -
-              availableSpots ~/ 2;
+  bool _backDotsShouldShow(BuildContext context, int availableSpots) {
+    final totalPages = InheritedNumberPaginator.of(context).numberPages;
 
-  bool _frontDotsShouldShow(BuildContext context, int availableSpots) =>
-      availableSpots < InheritedNumberPaginator.of(context).numberPages &&
-      currentPage > availableSpots ~/ 2 - 1;
+    if (totalPages > 4) {
+      if (currentPage <= totalPages - 3) {
+        return true;
+      }
+    }
+
+    return availableSpots < InheritedNumberPaginator.of(context).numberPages &&
+        currentPage <
+            InheritedNumberPaginator.of(context).numberPages -
+                availableSpots ~/ 2;
+  }
+
+  bool _frontDotsShouldShow(BuildContext context, int availableSpots) {
+    if (InheritedNumberPaginator.of(context).numberPages > 4) {
+      if (currentPage >= 2) {
+        return true;
+      }
+    }
+
+    return availableSpots < InheritedNumberPaginator.of(context).numberPages &&
+        currentPage > availableSpots ~/ 2 - 1;
+  }
 
   /// Checks if the given index is currently selected.
   bool _selected(index) => index == currentPage;
