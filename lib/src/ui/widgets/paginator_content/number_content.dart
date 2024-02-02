@@ -23,12 +23,13 @@ class NumberContent extends StatelessWidget {
         var availableSpots = (double.maxFinite / buttonWidth).floor();
 
         availableSpots = _getAvailableSpots(context, availableSpots);
+        final totalPages = InheritedNumberPaginator.of(context).numberPages;
 
         return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (_showFirstButton()) _buildPageButton(context, 0),
+            if (_showFirstButton(totalPages)) _buildPageButton(context, 0),
             if (_frontDotsShouldShow(context, availableSpots))
               _buildDots(context) ?? Container(),
             if (InheritedNumberPaginator.of(context).numberPages > 1)
@@ -65,7 +66,11 @@ class NumberContent extends StatelessWidget {
     return spots;
   }
 
-  bool _showFirstButton() {
+  bool _showFirstButton(final int totalPages) {
+    if (totalPages < 4) {
+      return true;
+    }
+
     if (currentPage < 2) {
       return true;
     } else {
@@ -76,11 +81,15 @@ class NumberContent extends StatelessWidget {
   bool _showLastButton(
     BuildContext context,
   ) {
-    if (InheritedNumberPaginator.of(context).numberPages > 1) {
-      final currentPosition =
-          InheritedNumberPaginator.of(context).numberPages - (currentPage + 1);
+    final totalPages = InheritedNumberPaginator.of(context).numberPages;
+    print(totalPages);
 
-      if (currentPosition < 2) {
+    if (totalPages < 3) {
+      return true;
+    }
+
+    if (totalPages > 1) {
+      if (currentPage >= totalPages - 2) {
         return true;
       } else {
         return false;
@@ -158,7 +167,7 @@ class NumberContent extends StatelessWidget {
   bool _backDotsShouldShow(BuildContext context, int availableSpots) {
     final totalPages = InheritedNumberPaginator.of(context).numberPages;
 
-    if (totalPages > 4) {
+    if (totalPages > 3) {
       if (currentPage <= totalPages - 3) {
         return true;
       }
@@ -170,15 +179,21 @@ class NumberContent extends StatelessWidget {
                 availableSpots ~/ 2;
   }
 
-  bool _frontDotsShouldShow(BuildContext context, int availableSpots) {
-    if (InheritedNumberPaginator.of(context).numberPages > 4) {
+  bool _frontDotsShouldShow(
+    BuildContext context,
+    int availableSpots,
+  ) {
+    final totalPages = InheritedNumberPaginator.of(context).numberPages;
+
+    // if(totalPages)
+
+    if (totalPages > 3) {
       if (currentPage >= 2) {
         return true;
       }
     }
 
-    return availableSpots < InheritedNumberPaginator.of(context).numberPages &&
-        currentPage > availableSpots ~/ 2 - 1;
+    return availableSpots < totalPages && currentPage > availableSpots ~/ 2 - 1;
   }
 
   /// Checks if the given index is currently selected.
