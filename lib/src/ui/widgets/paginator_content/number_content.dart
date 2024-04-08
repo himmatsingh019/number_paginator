@@ -82,9 +82,8 @@ class NumberContent extends StatelessWidget {
     BuildContext context,
   ) {
     final totalPages = InheritedNumberPaginator.of(context).numberPages;
-    print(totalPages);
 
-    if (totalPages < 3) {
+    if (totalPages <= 3) {
       return true;
     }
 

@@ -9,13 +9,13 @@ class NumbersPage extends StatefulWidget {
 }
 
 class _NumbersPageState extends State<NumbersPage> {
-  final int _numPages = 10;
+  final int _numPages = 3;
   int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     var pages = List.generate(
-      _numPages,
+      3,
       (index) => Center(
         child: Text(
           "Page ${index + 1}",
@@ -28,28 +28,24 @@ class _NumbersPageState extends State<NumbersPage> {
       body: Column(
         children: [
           pages[_currentPage],
-          Container(
-            color: Colors.amber,
-            alignment: Alignment.center,
-            child: NumberPaginator(
-              config: NumberPaginatorUIConfig(
-                mainAxisAlignment: MainAxisAlignment.center,
-                height: 46,
-                buttonShape: RoundedRectangleBorder(
-                  side: const BorderSide(
-                    color: Colors.black,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
+          NumberPaginator(
+            config: NumberPaginatorUIConfig(
+              mainAxisAlignment: MainAxisAlignment.center,
+              height: 46,
+              buttonShape: RoundedRectangleBorder(
+                side: const BorderSide(
+                  color: Colors.black,
                 ),
+                borderRadius: BorderRadius.circular(8),
               ),
-              // by default, the paginator shows numbers as center content
-              numberPages: _numPages,
-              onPageChange: (int index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
             ),
+            // by default, the paginator shows numbers as center content
+            numberPages: 3,
+            onPageChange: (int index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
           ),
         ],
       ),
